@@ -28,6 +28,19 @@
       </div>
       <!--End col-->
     </div>
+    <div class="column">
+      {% for book in books %}
+        <p>
+          {{book.first_name}} {{book.last_name}} {{book.guest_number}} {{book.comment}}
+          <form action="{% url 'book_detail' book.pk %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="_method" value="DELETE">
+          <button type="submit" class="delete-btn">Delete</button>
+          </form>
+        </p>
+      {% endfor %}
+
+    </div>
     <!--End row-->
 
 
