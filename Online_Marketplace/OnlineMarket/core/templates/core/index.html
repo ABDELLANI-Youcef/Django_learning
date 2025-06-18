@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}
+  welcome in my first page
+{% endblock %}
+
+{% block content %}
+  <h1>The front page, you can <a href="{% url 'contact' %}" >contact us here</a></h1>
+{% endblock %}
