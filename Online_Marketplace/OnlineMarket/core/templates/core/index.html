@@ -11,7 +11,11 @@
         <div>
           <a href="{% url 'item:item_detail' pk=item.pk %}">
             <div>
-              <img src="{{ item.image.url }}" alt="{{item.image.url}}" class="rounded-t-xl">
+              {% if item.image and item.image.url %}
+                <img src="{{ item.image.url }}" alt="{{item.image.url}}" class="rounded-t-xl">
+              {% else %}
+                <img src="static/img/Placeholder.png" alt="Default Image" class="rounded-t-xl">
+              {% endif %}
             </div>
             <div class="p-6 bg-white rounded-b-xl">
               <h2 class="text-2xl">{{item.name}}</h2>
