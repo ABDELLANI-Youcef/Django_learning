@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Item
-from .forms import NewItemForm
+from .forms import NewItemForm, EditItemForm
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
@@ -32,6 +32,24 @@ def new(request):
     'title': 'New Item'
   }
   return render(request, 'item/form.html', context)
+
+@login_required
+def edit(request, pk):
+  instance = get_object_or_404(Item, pk=pk)
+  if request.method == 'POST':
+
+    form = EditItemForm(request.POST, request.FILES, instance=instance)
+    if form.is_valid():
+      form.save()
+      return redirect('item:item_detail', pk=instance.pk)
+  else:
+    form = EditItemForm(instance=instance)
+  context = {
+    'form': form,
+    'title': 'Edit Item'
+  }
+
+  return render(request, 'item/edit.html', context)
 
 def delete(request, pk):
   item = get_object_or_404(Item, pk=pk)
