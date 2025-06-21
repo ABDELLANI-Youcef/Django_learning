@@ -6,7 +6,11 @@
 {% block content %}
   <div class="grid grid-cols-5 gap-6">
     <div class="col-span-3">
-      <img src="{{item.image.url}}" alt="item.name" class="rounded-xl">
+      {% if item.image and item.image.url %}
+        <img src="{{ item.image.url }}" alt="{{item.image.url}}" class="rounded-t-xl">
+      {% else %}
+        <img src="static/img/Placeholder.png" alt="Default Image" class="rounded-t-xl">
+      {% endif %}
     </div>
     <div class="col-span-2 p-6 pg-gray-100 rounded-x">
       <h1 class="mb-6 text-3xl">{{ item.name }}</h1>
@@ -18,7 +22,12 @@
           {{item.description}}
         </p>
       {% endif%}
-      <a href="#" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white hover:bg-teal-400 rounded-xl">Contact Seller</a>
+
+      {% if request.user == item.created_by %}
+        <div class="mt-6 p-6 bg-white rounded-xl"><a href="{% url 'item:delete' pk=item.pk %}" class="inline-block mt6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl">Delete</a></div>
+      {% else %}
+        <a href="#" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white hover:bg-teal-400 rounded-xl">Contact Seller</a>
+      {% endif %}
     </div>
   </div>
 
@@ -29,7 +38,11 @@
         <div>
           <a href="{% url 'item:item_detail' pk=item.pk %}">
             <div>
-              <img src="{{ item.image.url }}" alt="{{item.image.url}}" class="rounded-t-xl">
+              {% if item.image and item.image.url %}
+                <img src="{{ item.image.url }}" alt="{{item.image.url}}" class="rounded-t-xl">
+              {% else %}
+                <img src="static/img/Placeholder.png" alt="Default Image" class="rounded-t-xl">
+              {% endif %}
             </div>
             <div class="p-6 bg-white rounded-b-xl">
               <h2 class="text-2xl">{{item.name}}</h2>
