@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Item
 from .forms import NewItemForm
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 # Create your views here.
 def detail(request, pk):
@@ -30,3 +32,19 @@ def new(request):
     'title': 'New Item'
   }
   return render(request, 'item/form.html', context)
+
+def delete(request, pk):
+  item = get_object_or_404(Item, pk=pk)
+  item.delete()
+  return redirect('dashboard:index')
+
+@receiver(post_delete, sender=Item)
+def item_deleted(sender, instance, **kwargs):
+  file = instance.image
+  if file:
+    try:
+      file.delete(save=False)
+    except Exception as e:
+      print(f"Error deleting file: {e}")
+  else:
+    print("No file to delete.")
