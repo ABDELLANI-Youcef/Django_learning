@@ -66,3 +66,17 @@ def item_deleted(sender, instance, **kwargs):
       print(f"Error deleting file: {e}")
   else:
     print("No file to delete.")
+
+@receiver(pre_save, sender=Item)
+def delete_old_image_on_change(sender, instance, **kwarg):
+  if not instance.pk:
+    return False
+  try:
+    old_item = Item.objects.get(pk=instance.pk)
+  except Item.DoesNotExist:
+    return False
+  old_image = old_item.image
+  new_image = instance.image
+  if old_image and old_image != new_image:
+    if os.path.isfile(old_image.path):
+      old_image.delete(save=False)
