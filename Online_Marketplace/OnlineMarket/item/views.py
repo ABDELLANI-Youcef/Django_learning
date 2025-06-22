@@ -1,9 +1,28 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Item
+from .models import Item, Category
+from django.db.models import Q
 from .forms import NewItemForm, EditItemForm
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
+import os
+
+def items(request):
+  query = request.GET.get('query', '')
+  items = Item.objects.filter(is_sold = False)
+  category_id = request.GET.get('category_id', 0)
+  categories = Category.objects.all()
+  if category_id:
+    items = items.filter(category_id=category_id)
+  if query:
+    items = items.filter(Q(name__icontains=query)| Q(description__icontains=query))
+  context={
+    'items': items,
+    'query': query,
+    "categories": categories,
+    "category_id": int(category_id)
+  }
+  return render(request, 'item/items.html', context)
 
 # Create your views here.
 def detail(request, pk):
