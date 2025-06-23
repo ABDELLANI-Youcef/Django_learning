@@ -7,7 +7,7 @@
   <div class="grid grid-cols-5 gap-6">
     <div class="col-span-3">
       {% if item.image and item.image.url %}
-        <img src="{{ item.image.url }}" alt="{{item.image.url}}" class="rounded-t-xl">
+        <img src="{{ item.image.url }}" alt="{{item.image.url}}" class="rounded-t-xl w-1/2 h-1/2">
       {% else %}
         <img src="static/img/Placeholder.png" alt="Default Image" class="rounded-t-xl">
       {% endif %}
@@ -29,7 +29,7 @@
           <a href="{% url 'item:delete' pk=item.pk %}" class="inline-block mt6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl">Delete</a>
         </div>
       {% else %}
-        <a href="#" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white hover:bg-teal-400 rounded-xl">Contact Seller</a>
+        <a href="{% url 'conversation:new' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white hover:bg-teal-400 rounded-xl">Contact Seller</a>
       {% endif %}
     </div>
   </div>
@@ -42,7 +42,7 @@
           <a href="{% url 'item:item_detail' pk=item.pk %}">
             <div>
               {% if item.image and item.image.url %}
-                <img src="{{ item.image.url }}" alt="{{item.image.url}}" class="rounded-t-xl">
+                <img src="{{ item.image.url }}" alt="{{item.image.url}}" class="rounded-t-xl w-30 h-30">
               {% else %}
                 <img src="static/img/Placeholder.png" alt="Default Image" class="rounded-t-xl">
               {% endif %}
