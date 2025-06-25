@@ -29,8 +29,8 @@ class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   image = models.ImageField(upload_to='image', default='default/default-user.jpg', null=True, blank=True)
   full_name = models.CharField(max_length=100, null=True, blank=True)
-  bio = models.CharField(max_length=100, null=True, blank=True)
-  about = models.CharField(max_length=100, null=True, blank=True)
+  bio = models.CharField(null=True, blank=True)
+  about = models.CharField(null=True, blank=True)
   author = models.BooleanField(default=False)
   country = models.CharField(max_length=100, null=True, blank=True)
   facebook = models.CharField(max_length=100, null=True, blank=True)
@@ -38,12 +38,11 @@ class Profile(models.Model):
   date = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):
-    return self.user.username
+    return str(self.full_name) if self.full_name else str(self.user.full_name)
 
   def save(self, *args, **kwargs):
     if self.full_name == "" or self.full_name == None:
       self.full_name = self.user.full_name
-
     super(Profile, self).save(*args, **kwargs)
 
 def create_user_profile(sender, instance, created, **kwargs):
@@ -84,7 +83,7 @@ class Post(models.Model):
 
   user = models.ForeignKey(User, on_delete=models.CASCADE)
   profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
-  category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+  category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='posts')
   title = models.CharField(max_length=100)
   description = models.TextField(null=True, blank=True)
   image = models.ImageField(upload_to='image', null=True, blank=True)
@@ -95,7 +94,6 @@ class Post(models.Model):
   date = models.DateTimeField(auto_now_add=True)
 
   class Meta:
-    ordering = ["-date"]
     verbose_name_plural = "Post"
 
   def __str__(self):
@@ -106,11 +104,14 @@ class Post(models.Model):
       self.slug = slugify(self.title) + " " + shortuuid.uuid()[0:2]
     super(Post, self).save(*args, **kwargs)
 
+    def comments(self):
+        return Comment.objects.filter(post=self).order_by("-id")
+
 class Comment(models.Model):
   post = models.ForeignKey(Post, on_delete=models.CASCADE)
   name = models.CharField(max_length=100)
   email = models.EmailField(max_length=100)
-  comment = models.TextField(null=True, blank=True)
+  comment = models.TextField()
   reply = models.TextField(null=True, blank=True)
   date = models.DateTimeField(auto_now_add=True)
 
@@ -119,7 +120,7 @@ class Comment(models.Model):
     verbose_name_plural = "Comment"
 
   def __str__(self):
-    return self.post.title
+    return f"{self.post.title} - {self.name}"
 
 class Bookmark(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -127,11 +128,10 @@ class Bookmark(models.Model):
   date = models.DateTimeField(auto_now_add=True)
 
   class Meta:
-    ordering = ["-date"]
     verbose_name_plural = "Bookmark"
 
   def __str__(self):
-    return self.post.title
+    return f"{self.post.title} - {self.user.username}"
 
 class Notification(models.Model):
   NOTI_TYPE = (
