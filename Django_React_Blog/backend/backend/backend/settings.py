@@ -104,6 +104,8 @@ DATABASES = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+AUTH_USER_MODEL = 'api.user'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -189,13 +191,13 @@ SIMPLE_JWT = {
 
 # Custom Admin Settings
 JAZZMIN_SETTINGS = {
-  "site_title": "Desphixs",
-  "site_header": "Desphixs",
+  "site_title": "Youcef Blog",
+  "site_header": "Youcef Blog",
   "site_brand": "Modern Marketplace ",
   # "site_icon": "images/favicon.ico",
   # "site_logo": "images/logos/logo.jpg",
-  "welcome_sign": "Welcome To Desphixs",
-  "copyright": "Desphixs",
+  "welcome_sign": "Welcome To Youcef Blog",
+  "copyright": "Youcef Blog",
   "user_avatar": "images/photos/logo.jpg",
   "topmenu_links": [
       {"name": "Dashboard", "url": "home", "permissions": ["auth.view_user"]},
