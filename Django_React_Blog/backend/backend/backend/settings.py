@@ -58,30 +58,30 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  'django.middleware.security.SecurityMiddleware',
+  'corsheaders.middleware.CorsMiddleware',
+  'django.contrib.sessions.middleware.SessionMiddleware',
+  'django.middleware.common.CommonMiddleware',
+  'django.middleware.csrf.CsrfViewMiddleware',
+  'django.contrib.auth.middleware.AuthenticationMiddleware',
+  'django.contrib.messages.middleware.MessageMiddleware',
+  'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
   {
-      'BACKEND': 'django.template.backends.django.DjangoTemplates',
-      'DIRS': [os.path.join(BASE_DIR, 'templates')],
-      'APP_DIRS': True,
-      'OPTIONS': {
-          'context_processors': [
-              'django.template.context_processors.request',
-              'django.contrib.auth.context_processors.auth',
-              'django.contrib.messages.context_processors.messages',
-          ],
-      },
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [os.path.join(BASE_DIR, 'templates')],
+    'APP_DIRS': True,
+    'OPTIONS': {
+      'context_processors': [
+        'django.template.context_processors.request',
+        'django.contrib.auth.context_processors.auth',
+        'django.contrib.messages.context_processors.messages',
+      ],
+    },
   },
 ]
 
@@ -111,18 +111,18 @@ AUTH_USER_MODEL = 'api.user'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+  {
+    'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+  },
+  {
+    'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+  },
+  {
+    'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+  },
+  {
+    'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+  },
 ]
 
 
@@ -200,34 +200,32 @@ JAZZMIN_SETTINGS = {
   "copyright": "Youcef Blog",
   "user_avatar": "images/photos/logo.jpg",
   "topmenu_links": [
-      {"name": "Dashboard", "url": "home", "permissions": ["auth.view_user"]},
-      {"model": "auth.User"},
+    {"name": "Dashboard", "url": "home", "permissions": ["auth.view_user"]},
+    {"model": "auth.User"},
   ],
   "show_sidebar": True,
   "navigation_expanded": True,
   "order_with_respect_to": [
-      "api",
-      "api.Post",
-      "api.Category",
-      "api.Comment",
-      "api.Bookmark",
-      "api.Notification",
+    "api",
+    "api.Post",
+    "api.Category",
+    "api.Comment",
+    "api.Bookmark",
+    "api.Notification",
   ],
   "icons": {
-      "admin.LogEntry": "fas fa-file",
+    "admin.LogEntry": "fas fa-file",
 
-      "auth": "fas fa-users-cog",
-      "auth.user": "fas fa-user",
+    "auth": "fas fa-users-cog",
+    "auth.user": "fas fa-user",
 
-      "api.User": "fas fa-user",
-      "api.Profile":"fas fa-address-card",
-      "api.Post":"fas fa-th",
-      "api.Category":"fas fa-tag",
-      "api.Comment":"fas fa-envelope",
-      "api.Notification":"fas fa-bell",
-      "api.Bookmark":"fas fa-heart",
-
-      
+    "api.User": "fas fa-user",
+    "api.Profile":"fas fa-address-card",
+    "api.Post":"fas fa-th",
+    "api.Category":"fas fa-tag",
+    "api.Comment":"fas fa-envelope",
+    "api.Notification":"fas fa-bell",
+    "api.Bookmark":"fas fa-heart",
   },
   "default_icon_parents": "fas fa-chevron-circle-right",
   "default_icon_children": "fas fa-arrow-circle-right",
@@ -238,8 +236,8 @@ JAZZMIN_SETTINGS = {
   
   "changeform_format": "horizontal_tabs",
   "changeform_format_overrides": {
-      "auth.user": "collapsible",
-      "auth.group": "vertical_tabs",
+    "auth.user": "collapsible",
+    "auth.group": "vertical_tabs",
   },
 }
 
