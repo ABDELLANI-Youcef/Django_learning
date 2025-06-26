@@ -45,3 +45,20 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     user = get_object_or_404(api_models.User, id=user_id)
     profile = get_object_or_404(api_models.Profile, user=user)
     return profile
+
+class CategoryListAPIView(generics.ListCreateAPIView):
+  serializer_class = api_serializer.CategorySerializer
+  permission_classes = [AllowAny]
+
+  def get_queryset(self): # type: ignore
+    return api_models.Category.objects.all()
+
+class PostCategoryListAPIView(generics.ListCreateAPIView):
+  def get_serializer_class(self): # type: ignore
+    return api_serializer.PostSerializerPost if self.request.method == 'POST' else api_serializer.PostSerializerGet
+  permission_classes = [AllowAny]
+
+  def get_queryset(self): # type: ignore
+    category_slug = self.kwargs['category_slug']
+    category = api_models.Category.objects.get(slug = category_slug)
+    return api_models.Post.objects.filter(category = category, status = "Active")
