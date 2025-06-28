@@ -71,15 +71,44 @@ class PostListAPIView(generics.ListCreateAPIView):
     return posts
 
 class PostDetailAPIView(generics.RetrieveAPIView):
-    serializer_class = api_serializer.PostSerializerGet
-    permission_classes = [AllowAny]
-    lookup_field = 'slug'
+  serializer_class = api_serializer.PostSerializerGet
+  permission_classes = [AllowAny]
+  lookup_field = 'slug'
 
-    def get_queryset(self):# type: ignore
-        return api_models.Post.objects.filter(status="Active")
+  def get_queryset(self):# type: ignore
+    return api_models.Post.objects.filter(status="Active")
 
-    def get_object(self):
-        obj = super().get_object()
-        obj.view += 1
-        obj.save()
-        return obj
+  def get_object(self):
+    obj = super().get_object()
+    obj.view += 1
+    obj.save()
+    return obj
+
+class LikePostAPIView(APIView):
+  @swagger_auto_schema(
+      request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+          'user_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+          'post_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+        },
+      ),
+    )
+  def post(self, request):
+    user_id = request.data['user_id']
+    post_id = request.data['post_id']
+
+    user = api_models.User.objects.get(id = user_id)
+    post = api_models.Post.objects.get(id = post_id)
+
+    if user in post.likes.all():
+      post.likes.remove(user)
+      return Response({"message": "Post is disliked"}, status=status.HTTP_200_OK)
+    else:
+      post.likes.add(user)
+      api_models.Notification.objects.create(
+        user = post.user,
+        post = post,
+        type = 'Like'
+      )
+      return Response({"message": "post is liked"}, status = status.HTTP_201_CREATED)
