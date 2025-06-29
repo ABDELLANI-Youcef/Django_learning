@@ -147,3 +147,34 @@ class PostCommentAPIView(APIView):
     )
 
     return Response({'message': "comment Sent"}, status = status.HTTP_201_CREATED)
+
+class PostBookmarkAPIView(APIView):
+  @swagger_auto_schema(
+    request_body= openapi.Schema(
+      type= openapi.TYPE_OBJECT,
+      properties={
+        "post_id": openapi.Schema(type=openapi.TYPE_INTEGER),
+        "user_id": openapi.Schema(type=openapi.TYPE_INTEGER)
+      }
+    )
+  )
+  def post(self, request):
+    post_id = request.data['post_id']
+    user_id = request.data['user_id']
+
+    post = api_models.Post.objects.get(id = post_id)
+    user = api_models.User.objects.get(id = user_id)
+    bookmark = api_models.Bookmark.objects.filter(user = user, post = post).first()
+
+    if bookmark:
+      bookmark.delete()
+      return Response({"message": "Post is Un-bookmarked"}, status = status.HTTP_200_OK)
+    else:
+      api_models.Bookmark.objects.create(post = post, user = user)
+      api_models.Notification.objects.create(
+        post = post,
+        user = user,
+        type = "Bookmark"
+      )
+      return Response({"message": "Post is Bookmarked"}, status=status.HTTP_204_NO_CONTENT)
+
