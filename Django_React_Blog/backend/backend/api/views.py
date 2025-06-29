@@ -8,7 +8,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.db.models import Sum
 # Restframework
-from rest_framework import status
+from rest_framework import status, mixins, generics
 from rest_framework.decorators import api_view, APIView, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -28,6 +28,13 @@ import random
 from api import serializer as api_serializer
 from api import models as api_models
 
+class ListAPIView(mixins.ListModelMixin, generics.GenericAPIView):
+    """
+    Concrete view for listing a queryset.
+    """
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
 class MyTokenObtainPairView(TokenObtainPairView):
   serializer_class = api_serializer.MyTokenObtainPairSerializer
 
@@ -46,14 +53,14 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     profile = get_object_or_404(api_models.Profile, user=user)
     return profile
 
-class CategoryListAPIView(generics.ListCreateAPIView):
+class CategoryListAPIView(ListAPIView):
   serializer_class = api_serializer.CategorySerializer
   permission_classes = [AllowAny]
 
   def get_queryset(self): # type: ignore
     return api_models.Category.objects.all()
 
-class PostCategoryListAPIView(generics.ListCreateAPIView):
+class PostCategoryListAPIView(ListAPIView):
   def get_serializer_class(self): # type: ignore
     return api_serializer.PostSerializerPost if self.request.method == 'POST' else api_serializer.PostSerializerGet
   permission_classes = [AllowAny]
@@ -63,7 +70,7 @@ class PostCategoryListAPIView(generics.ListCreateAPIView):
     category = api_models.Category.objects.get(slug = category_slug)
     return api_models.Post.objects.filter(category = category, status = "Active")
 
-class PostListAPIView(generics.ListCreateAPIView):
+class PostListAPIView(ListAPIView):
   serializer_class = api_serializer.PostSerializerGet
   permission_classes = [AllowAny]
   def get_queryset(self):  # type: ignore
@@ -178,3 +185,25 @@ class PostBookmarkAPIView(APIView):
       )
       return Response({"message": "Post is Bookmarked"}, status=status.HTTP_204_NO_CONTENT)
 
+class DashboardStatsView(ListAPIView):
+  serializer_class = api_serializer.AuthorSerializer
+  permission_classes = [AllowAny]
+  def get_queryset(self): # type: ignore
+    user_id = self.kwargs['user_id']
+    user = get_object_or_404(api_models.User, id = user_id)
+
+    views = api_models.Post.objects.filter(user = user).aggregate(view = Sum("view"))['view'] or 0
+    posts = api_models.Post.objects.filter(user = user).count()
+    likes = api_models.Post.objects.filter(user = user).aggregate(total_likes = Sum('likes'))['total_likes'] or 0
+    bookmark = api_models.Bookmark.objects.filter(post__user = user).count()
+    return [{
+      'views': views,
+      'posts': posts,
+      'likes': likes,
+      'bookmark': bookmark
+    }]
+
+  def list(self, request, *args, **kwargs):
+    queryset = self.get_queryset()
+    serializer = self.get_serializer(queryset, many = True)
+    return Response(serializer.data)
