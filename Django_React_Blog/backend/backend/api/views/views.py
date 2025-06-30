@@ -16,8 +16,8 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
 from datetime import datetime
 
 # Others
@@ -92,15 +92,15 @@ class PostDetailAPIView(generics.RetrieveAPIView):
     return obj
 
 class LikePostAPIView(APIView):
-  @swagger_auto_schema(
-      request_body=openapi.Schema(
-        type=openapi.TYPE_OBJECT,
-        properties={
-          'user_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-          'post_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-        },
-      ),
-    )
+  # @swagger_auto_schema(
+  #     request_body=openapi.Schema(
+  #       type=openapi.TYPE_OBJECT,
+  #       properties={
+  #         'user_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+  #         'post_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+  #       },
+  #     ),
+  #   )
   def post(self, request):
     user_id = request.data['user_id']
     post_id = request.data['post_id']
@@ -121,17 +121,17 @@ class LikePostAPIView(APIView):
       return Response({"message": "post is liked"}, status = status.HTTP_201_CREATED)
 
 class PostCommentAPIView(APIView):
-  @swagger_auto_schema(
-    request_body=openapi.Schema(
-      type=openapi.TYPE_OBJECT,
-      properties={
-        'post_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-        'name': openapi.Schema(type=openapi.TYPE_STRING),
-        'email': openapi.Schema(type=openapi.TYPE_STRING),
-        'comment': openapi.Schema(type=openapi.TYPE_STRING),
-      },
-    ),
-  )
+  # @swagger_auto_schema(
+  #   request_body=openapi.Schema(
+  #     type=openapi.TYPE_OBJECT,
+  #     properties={
+  #       'post_id': openapi.Schema(type=openapi.TYPE_INTEGER),
+  #       'name': openapi.Schema(type=openapi.TYPE_STRING),
+  #       'email': openapi.Schema(type=openapi.TYPE_STRING),
+  #       'comment': openapi.Schema(type=openapi.TYPE_STRING),
+  #     },
+  #   ),
+  # )
 
   def post(self, request):
     post_id = request.data['post_id']
@@ -156,15 +156,15 @@ class PostCommentAPIView(APIView):
     return Response({'message': "comment Sent"}, status = status.HTTP_201_CREATED)
 
 class PostBookmarkAPIView(APIView):
-  @swagger_auto_schema(
-    request_body= openapi.Schema(
-      type= openapi.TYPE_OBJECT,
-      properties={
-        "post_id": openapi.Schema(type=openapi.TYPE_INTEGER),
-        "user_id": openapi.Schema(type=openapi.TYPE_INTEGER)
-      }
-    )
-  )
+  # @swagger_auto_schema(
+  #   request_body= openapi.Schema(
+  #     type= openapi.TYPE_OBJECT,
+  #     properties={
+  #       "post_id": openapi.Schema(type=openapi.TYPE_INTEGER),
+  #       "user_id": openapi.Schema(type=openapi.TYPE_INTEGER)
+  #     }
+  #   )
+  # )
   def post(self, request):
     post_id = request.data['post_id']
     user_id = request.data['user_id']
