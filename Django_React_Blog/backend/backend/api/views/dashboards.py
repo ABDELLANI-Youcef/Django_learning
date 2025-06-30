@@ -16,8 +16,8 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
 from datetime import datetime
 
 # Others
@@ -105,3 +105,62 @@ class DashboardReplyCommentAPIView(APIView):
     comment.save()
     return Response({"message": "Comment was replied"}, status= status.HTTP_201_CREATED)
 
+@extend_schema(
+  tags=['Dashboard'],
+    request=api_serializer.PostSerializerPost,
+    responses={
+        201: OpenApiTypes.OBJECT,
+        400: OpenApiTypes.OBJECT
+    },
+    examples=[
+        OpenApiExample(
+            'Example request',
+            value={
+                "user_id": 1,
+                "title": "Sample Post",
+                "image": "string",  # or actual base64 image
+                "description": "Post content",
+                "slug": "sample-post-xy",  # optional
+                "category_id": 1,
+                "post_status": "Active"
+            },
+            request_only=True
+        ),
+        OpenApiExample(
+            'Success response',
+            value={"message": "Post was created successfully"},
+            response_only=True
+        )
+    ],
+    description='''
+    Creates a new blog post.
+    Required fields: user_id, title, category_id.
+    Slug will be auto-generated if not provided.
+    '''
+)
+class DashboardPostCreateAPIView(generics.CreateAPIView):
+  serializer_class = api_serializer.PostSerializerPost
+  permission_classes = [AllowAny]
+
+  def create(self, request, *args, **kwargs): # type: ignore
+    user_id = request.data.get("user_id")
+    title = request.data.get("title")
+    image = request.data.get("image")
+    description = request.data.get("description")
+    slug = request.data.get("slug")
+    category_id = request.data.get("category_id")
+    post_status = request.data.get("post_status")
+
+    user =  get_object_or_404(api_models.User, id = user_id)
+    category = get_object_or_404(api_models.Category, id = category_id)
+
+    api_models.Post.objects.create(
+      user = user,
+      category = category,
+      title = title,
+      image = image,
+      description = description,
+      slug = slug,
+      status = post_status
+    )
+    return Response({"message": "Post was created successfully"}, status= status.HTTP_201_CREATED)
