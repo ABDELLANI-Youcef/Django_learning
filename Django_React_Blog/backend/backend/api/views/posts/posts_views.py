@@ -27,23 +27,17 @@ import random
 # Custom Imports
 from api import serializers as api_serializer
 from api import models as api_models
+from api.shared import commons
 
 
-class ListAPIView(mixins.ListModelMixin, generics.GenericAPIView):
-  """
-  Concrete view for listing a queryset.
-  """
-  def get(self, request, *args, **kwargs):
-    return self.list(request, *args, **kwargs)
-
-class CategoryListAPIView(ListAPIView):
+class CategoryListAPIView(commons.ListAPIView):
   serializer_class = api_serializer.CategorySerializer
   permission_classes = [AllowAny]
 
   def get_queryset(self): # type: ignore
     return api_models.Category.objects.all()
 
-class PostCategoryListAPIView(ListAPIView):
+class PostCategoryListAPIView(commons.ListAPIView):
   def get_serializer_class(self): # type: ignore
     return api_serializer.PostSerializerPost if self.request.method == 'POST' else api_serializer.PostSerializerGet
   permission_classes = [AllowAny]
@@ -53,7 +47,7 @@ class PostCategoryListAPIView(ListAPIView):
     category = api_models.Category.objects.get(slug = category_slug)
     return api_models.Post.objects.filter(category = category, status = "Active")
 
-class PostListAPIView(ListAPIView):
+class PostListAPIView(commons.ListAPIView):
   serializer_class = api_serializer.PostSerializerGet
   permission_classes = [AllowAny]
   def get_queryset(self):  # type: ignore

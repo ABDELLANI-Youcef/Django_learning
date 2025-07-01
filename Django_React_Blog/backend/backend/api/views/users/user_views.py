@@ -28,13 +28,6 @@ import random
 from api import serializers as api_serializer
 from api import models as api_models
 
-class ListAPIView(mixins.ListModelMixin, generics.GenericAPIView):
-  """
-  Concrete view for listing a queryset.
-  """
-  def get(self, request, *args, **kwargs):
-    return self.list(request, *args, **kwargs)
-
 class MyTokenObtainPairView(TokenObtainPairView):
   serializer_class = api_serializer.MyTokenObtainPairSerializer
 

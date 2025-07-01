@@ -27,15 +27,9 @@ import random
 # Custom Imports
 from api import serializers as api_serializer
 from api import models as api_models
+from api.shared import commons
 
-class ListAPIView(mixins.ListModelMixin, generics.GenericAPIView):
-  """
-  Concrete view for listing a queryset.
-  """
-  def get(self, request, *args, **kwargs):
-    return self.list(request, *args, **kwargs)
-
-class DashboardStatsView(ListAPIView):
+class DashboardStatsView(commons.ListAPIView):
   serializer_class = api_serializer.AuthorSerializer
   permission_classes = [AllowAny]
   def get_queryset(self): # type: ignore
@@ -58,7 +52,7 @@ class DashboardStatsView(ListAPIView):
     serializer = self.get_serializer(queryset, many = True)
     return Response(serializer.data)
 
-class DashboardPostListsView(ListAPIView):
+class DashboardPostListsView(commons.ListAPIView):
   serializer_class = api_serializer.PostSerializerGet
   permission_classes = [AllowAny]
 
@@ -67,7 +61,7 @@ class DashboardPostListsView(ListAPIView):
     user = api_models.User.objects.get(id = user_id)
     return api_models.Post.objects.filter(user = user).order_by('-id')
 
-class DashboardCommentListView(ListAPIView):
+class DashboardCommentListView(commons.ListAPIView):
   serializer_class = api_serializer.CommentSerializerGet
   permission_classes = [AllowAny]
 
@@ -76,7 +70,7 @@ class DashboardCommentListView(ListAPIView):
     user = api_models.User.objects.get(id = user_id)
     return api_models.Comment.objects.filter(post__user = user)
 
-class DashboardNotificationsListView(ListAPIView):
+class DashboardNotificationsListView(commons.ListAPIView):
   serializer_class = api_serializer.NotificationSerializerGet
   permission_classes = [AllowAny]
 
