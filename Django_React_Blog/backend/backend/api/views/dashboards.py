@@ -164,3 +164,35 @@ class DashboardPostCreateAPIView(generics.CreateAPIView):
       status = post_status
     )
     return Response({"message": "Post was created successfully"}, status= status.HTTP_201_CREATED)
+
+class DashboardPostEditAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = api_serializer.PostSerializerPost
+    permission_classes = [AllowAny]
+
+    def get_object(self): # type: ignore
+      post_id = self.kwargs['post_id']
+      return get_object_or_404(api_models.Post, id=post_id)
+
+    def update(self, request, *args, **kwargs):
+      instance = self.get_object()
+
+      # Handle category update (if provided)
+      if 'category_id' in request.data:
+        category = get_object_or_404(api_models.Category, id=request.data['category_id'])
+        instance.category = category
+
+      # Handle other fields
+      if 'title' in request.data:
+        instance.title = request.data['title']
+
+      if 'description' in request.data:
+        instance.description = request.data['description']
+
+      if 'image' in request.data and request.data['image'] != "undefined":
+        instance.image = request.data['image']
+
+      if 'post_status' in request.data:
+        instance.status = request.data['post_status']
+
+      instance.save()
+      return Response({"message": 'Post was edited successfully'}, status=status.HTTP_200_OK)

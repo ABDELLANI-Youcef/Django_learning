@@ -8,5 +8,6 @@ urlpatterns = [
   path('noti-list/<user_id>/',dashboards.DashboardNotificationsListView.as_view()),
   path('noti-mark-seen/', dashboards.DashboardMarkNotiSeenAPIView.as_view()),
   path('reply-comment', dashboards.DashboardReplyCommentAPIView.as_view()),
-  path('post-create', dashboards.DashboardPostCreateAPIView.as_view())
+  path('post-create', dashboards.DashboardPostCreateAPIView.as_view()),
+  path('post/edit/<post_id>', dashboards.DashboardPostEditAPIView.as_view())
 ]
