@@ -277,7 +277,7 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Your API',
-    'DESCRIPTION': 'API documentation',
+    'TITLE': 'Django React Blog',
+    'DESCRIPTION': 'My First Blog I create',
     'VERSION': '1.0.0',
 }
