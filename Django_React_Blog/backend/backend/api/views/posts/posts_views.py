@@ -28,30 +28,13 @@ import random
 from api import serializer as api_serializer
 from api import models as api_models
 
+
 class ListAPIView(mixins.ListModelMixin, generics.GenericAPIView):
-    """
-    Concrete view for listing a queryset.
-    """
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-class MyTokenObtainPairView(TokenObtainPairView):
-  serializer_class = api_serializer.MyTokenObtainPairSerializer
-
-class RegisterView(generics.CreateAPIView):
-  queryset = api_models.User.objects.all()
-  permission_classes = [AllowAny]
-  serializer_class = api_serializer.RegisterSerializer
-
-class ProfileView(generics.RetrieveUpdateAPIView):
-  permission_classes = [AllowAny]
-  serializer_class = api_serializer.ProfileSerializer
-
-  def get_object(self): # type: ignore
-    user_id = self.kwargs['user_id']
-    user = get_object_or_404(api_models.User, id=user_id)
-    profile = get_object_or_404(api_models.Profile, user=user)
-    return profile
+  """
+  Concrete view for listing a queryset.
+  """
+  def get(self, request, *args, **kwargs):
+    return self.list(request, *args, **kwargs)
 
 class CategoryListAPIView(ListAPIView):
   serializer_class = api_serializer.CategorySerializer
@@ -92,15 +75,6 @@ class PostDetailAPIView(generics.RetrieveAPIView):
     return obj
 
 class LikePostAPIView(APIView):
-  # @swagger_auto_schema(
-  #     request_body=openapi.Schema(
-  #       type=openapi.TYPE_OBJECT,
-  #       properties={
-  #         'user_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-  #         'post_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-  #       },
-  #     ),
-  #   )
   def post(self, request):
     user_id = request.data['user_id']
     post_id = request.data['post_id']
@@ -121,18 +95,6 @@ class LikePostAPIView(APIView):
       return Response({"message": "post is liked"}, status = status.HTTP_201_CREATED)
 
 class PostCommentAPIView(APIView):
-  # @swagger_auto_schema(
-  #   request_body=openapi.Schema(
-  #     type=openapi.TYPE_OBJECT,
-  #     properties={
-  #       'post_id': openapi.Schema(type=openapi.TYPE_INTEGER),
-  #       'name': openapi.Schema(type=openapi.TYPE_STRING),
-  #       'email': openapi.Schema(type=openapi.TYPE_STRING),
-  #       'comment': openapi.Schema(type=openapi.TYPE_STRING),
-  #     },
-  #   ),
-  # )
-
   def post(self, request):
     post_id = request.data['post_id']
     name = request.data['name']
@@ -156,15 +118,6 @@ class PostCommentAPIView(APIView):
     return Response({'message': "comment Sent"}, status = status.HTTP_201_CREATED)
 
 class PostBookmarkAPIView(APIView):
-  # @swagger_auto_schema(
-  #   request_body= openapi.Schema(
-  #     type= openapi.TYPE_OBJECT,
-  #     properties={
-  #       "post_id": openapi.Schema(type=openapi.TYPE_INTEGER),
-  #       "user_id": openapi.Schema(type=openapi.TYPE_INTEGER)
-  #     }
-  #   )
-  # )
   def post(self, request):
     post_id = request.data['post_id']
     user_id = request.data['user_id']
