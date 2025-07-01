@@ -25,7 +25,7 @@ import json
 import random
 
 # Custom Imports
-from api import serializer as api_serializer
+from api import serializers as api_serializer
 from api import models as api_models
 
 class ListAPIView(mixins.ListModelMixin, generics.GenericAPIView):
