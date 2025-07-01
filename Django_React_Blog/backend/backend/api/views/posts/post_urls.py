@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views as api_view
+from . import posts_views as api_view
 
 urlpatterns = [
   path('category/list/', api_view.CategoryListAPIView.as_view()),
