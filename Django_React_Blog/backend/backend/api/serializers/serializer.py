@@ -9,7 +9,6 @@
 from rest_framework import serializers
 
 from api import models as api_models
-
 class BookmarkSerializerPost(serializers.ModelSerializer):
   class Meta:
     model= api_models.Bookmark
