@@ -54,7 +54,7 @@ INSTALLED_APPS = [
   'corsheaders',
   'rest_framework',
   'rest_framework_simplejwt.token_blacklist',
-  'drf_yasg'
+  'drf_spectacular'
 ]
 
 MIDDLEWARE = [
@@ -154,7 +154,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 REST_FRAMEWORK = {
   'DEFAULT_AUTHENTICATION_CLASSES': [
     'rest_framework_simplejwt.authentication.JWTAuthentication'
-  ]
+  ],
+  'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
 
 SIMPLE_JWT = {
@@ -273,4 +274,10 @@ JAZZMIN_UI_TWEAKS = {
     "danger": "btn-danger",
     "success": "btn-success"
   }
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Django React Blog',
+    'DESCRIPTION': 'My First Blog I create',
+    'VERSION': '1.0.0',
 }
