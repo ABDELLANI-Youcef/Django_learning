@@ -8,34 +8,26 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.db.models import Sum
 # Restframework
-from rest_framework import status, mixins, generics
+from rest_framework import status, generics
 from rest_framework.decorators import api_view, APIView, permission_classes
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.utils import OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
-from datetime import datetime
 
 # Others
 import json
 import random
 
 # Custom Imports
-from api import serializer as api_serializer
+from api import serializers as api_serializer
 from api import models as api_models
+from api.shared import commons
 
-class ListAPIView(mixins.ListModelMixin, generics.GenericAPIView):
-  """
-  Concrete view for listing a queryset.
-  """
-  def get(self, request, *args, **kwargs):
-    return self.list(request, *args, **kwargs)
-
-class DashboardStatsView(ListAPIView):
+class DashboardStatsView(commons.ListAPIView):
   serializer_class = api_serializer.AuthorSerializer
   permission_classes = [AllowAny]
   def get_queryset(self): # type: ignore
@@ -58,7 +50,7 @@ class DashboardStatsView(ListAPIView):
     serializer = self.get_serializer(queryset, many = True)
     return Response(serializer.data)
 
-class DashboardPostListsView(ListAPIView):
+class DashboardPostListsView(commons.ListAPIView):
   serializer_class = api_serializer.PostSerializerGet
   permission_classes = [AllowAny]
 
@@ -67,7 +59,7 @@ class DashboardPostListsView(ListAPIView):
     user = api_models.User.objects.get(id = user_id)
     return api_models.Post.objects.filter(user = user).order_by('-id')
 
-class DashboardCommentListView(ListAPIView):
+class DashboardCommentListView(commons.ListAPIView):
   serializer_class = api_serializer.CommentSerializerGet
   permission_classes = [AllowAny]
 
@@ -76,7 +68,7 @@ class DashboardCommentListView(ListAPIView):
     user = api_models.User.objects.get(id = user_id)
     return api_models.Comment.objects.filter(post__user = user)
 
-class DashboardNotificationsListView(ListAPIView):
+class DashboardNotificationsListView(commons.ListAPIView):
   serializer_class = api_serializer.NotificationSerializerGet
   permission_classes = [AllowAny]
 
@@ -105,39 +97,6 @@ class DashboardReplyCommentAPIView(APIView):
     comment.save()
     return Response({"message": "Comment was replied"}, status= status.HTTP_201_CREATED)
 
-@extend_schema(
-  tags=['Dashboard'],
-    request=api_serializer.PostSerializerPost,
-    responses={
-        201: OpenApiTypes.OBJECT,
-        400: OpenApiTypes.OBJECT
-    },
-    examples=[
-        OpenApiExample(
-            'Example request',
-            value={
-                "user_id": 1,
-                "title": "Sample Post",
-                "image": "string",  # or actual base64 image
-                "description": "Post content",
-                "slug": "sample-post-xy",  # optional
-                "category_id": 1,
-                "post_status": "Active"
-            },
-            request_only=True
-        ),
-        OpenApiExample(
-            'Success response',
-            value={"message": "Post was created successfully"},
-            response_only=True
-        )
-    ],
-    description='''
-    Creates a new blog post.
-    Required fields: user_id, title, category_id.
-    Slug will be auto-generated if not provided.
-    '''
-)
 class DashboardPostCreateAPIView(generics.CreateAPIView):
   serializer_class = api_serializer.PostSerializerPost
   permission_classes = [AllowAny]
