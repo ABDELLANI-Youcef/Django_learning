@@ -5,7 +5,7 @@ import { useAuthStore } from "../store/auth";
 import axios from "./axios";
 
 // Importing jwt_decode to decode JSON Web Tokens
-import jwt_decode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 // Importing the Cookies library to handle browser cookies
 import Cookies from "js-cookie";
@@ -132,7 +132,7 @@ export const setAuthUser = (access_token, refresh_token) => {
     });
 
     // Decoding access token to get user information
-    const user = jwt_decode(access_token) ?? null;
+    const user = jwtDecode(access_token) ?? null;
 
     // If user information is present, update user state; otherwise, set loading state to false
     if (user) {
@@ -157,10 +157,11 @@ export const getRefreshToken = async () => {
 export const isAccessTokenExpired = (accessToken) => {
     try {
         // Decoding the access token and checking if it has expired
-        const decodedToken = jwt_decode(accessToken);
+        const decodedToken = jwtDecode(accessToken);
         return decodedToken.exp < Date.now() / 1000;
     } catch (err) {
         // Returning true if the token is invalid or expired
+        console.log(err.message)
         return true;
     }
 };
