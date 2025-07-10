@@ -37,6 +37,7 @@ class Post(models.Model):
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='posts')
   title = models.CharField(max_length=100)
   description = models.TextField(null=True, blank=True)
+  tags = models.CharField(max_length=100, null=True)
   image = models.ImageField(upload_to='image', null=True, blank=True)
   status = models.CharField(choices=STATUS, max_length=100, default="Active")
   view = models.IntegerField(default=0)
