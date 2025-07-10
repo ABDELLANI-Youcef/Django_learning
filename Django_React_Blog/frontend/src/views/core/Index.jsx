@@ -27,13 +27,16 @@ function Index() {
     fetchPosts();
   }, []);
 
-  const itemsPerPage = 2
-  const [currentPage, setCurrentPage] = useState(1)
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const postItems = posts?.slice(indexOfFirstItem,indexOfLastItem)
-  const totalPages = Math.ceil(posts?.length / itemsPerPage)
-  const pageNumbers = Array.from({length: totalPages}, (_, index)=>index+1)
+  const itemsPerPage = 2;
+  const [currentPage, setCurrentPage] = useState(1);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const postItems = posts?.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(posts?.length / itemsPerPage);
+  const pageNumbers = Array.from(
+    { length: totalPages },
+    (_, index) => index + 1
+  );
 
   return (
     <div>
@@ -91,7 +94,8 @@ function Index() {
                     >
                       <li>
                         <a href="#" className="text-dark text-decoration-none">
-                          <i className="fas fa-user"></i> {post?.profile?.username || "Youcef Abdellani"}
+                          <i className="fas fa-user"></i>{' '}
+                          {post?.profile?.username || 'Youcef Abdellani'}
                         </a>
                       </li>
                       <li className="mt-2">
@@ -108,25 +112,41 @@ function Index() {
           </div>
           <nav className="d-flex mt-2">
             <ul className="pagination">
-              <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                <button className="page-link text-dark fw-bold me-1 rounded" onClick={() =>setCurrentPage(currentPage-1)}>
+              <li
+                className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}
+              >
+                <button
+                  className="page-link text-dark fw-bold me-1 rounded"
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                >
                   <i className="fas fa-arrow-left me-2" />
                   Previous
                 </button>
               </li>
             </ul>
             <ul className="pagination">
-              {pageNumbers?.map((number)=>(
-              <li key={number} className={`page-item ${currentPage === number ? "active" : ""}`}>
-                <button className={`page-link ${currentPage === number ? "active" : "text-dark"} fw-bold rounded`} onClick={() =>setCurrentPage(number)}>
-                  {number}
-                </button>
-              </li>
+              {pageNumbers?.map((number) => (
+                <li
+                  key={number}
+                  className={`page-item ${currentPage === number ? 'active' : ''}`}
+                >
+                  <button
+                    className={`page-link ${currentPage === number ? 'active' : 'text-dark'} fw-bold rounded`}
+                    onClick={() => setCurrentPage(number)}
+                  >
+                    {number}
+                  </button>
+                </li>
               ))}
             </ul>
             <ul className="pagination">
-              <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                <button className="page-link text-dark fw-bold ms-1 rounded"  onClick={() =>setCurrentPage(currentPage+1)}>
+              <li
+                className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}
+              >
+                <button
+                  className="page-link text-dark fw-bold ms-1 rounded"
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                >
                   Next
                   <i className="fas fa-arrow-right ms-3 " />
                 </button>
@@ -144,24 +164,26 @@ function Index() {
                 <h2>Categories</h2>
               </div>
               <div className="d-flex flex-wrap justify-content-between">
-                {categories?.map((category)=>(<div className="mt-2" key={category?.id}>
-                  <div className="card bg-transparent">
-                    <img
-                      className="card-img"
-                      src={category.image}
-                      style={{
-                        width: '150px',
-                        height: '80px',
-                        objectFit: 'cover',
-                      }}
-                      alt="card image"
-                    />
-                    <div className="d-flex flex-column align-items-center mt-3 pb-2">
-                      <h5 className="mb-0">{category?.title}</h5>
-                      <small>{category?.post_count} Articles</small>
+                {categories?.map((category) => (
+                  <div className="mt-2" key={category?.id}>
+                    <div className="card bg-transparent">
+                      <img
+                        className="card-img"
+                        src={category.image}
+                        style={{
+                          width: '150px',
+                          height: '80px',
+                          objectFit: 'cover',
+                        }}
+                        alt="card image"
+                      />
+                      <div className="d-flex flex-column align-items-center mt-3 pb-2">
+                        <h5 className="mb-0">{category?.title}</h5>
+                        <small>{category?.post_count} Articles</small>
+                      </div>
                     </div>
                   </div>
-                </div>))}
+                ))}
               </div>
             </div>
           </div>

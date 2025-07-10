@@ -107,6 +107,7 @@ class DashboardPostCreateAPIView(generics.CreateAPIView):
     image = request.data.get("image")
     description = request.data.get("description")
     slug = request.data.get("slug")
+    tags = request.data.get('tags')
     category_id = request.data.get("category_id")
     post_status = request.data.get("post_status")
 
@@ -120,7 +121,8 @@ class DashboardPostCreateAPIView(generics.CreateAPIView):
       image = image,
       description = description,
       slug = slug,
-      status = post_status
+      status = post_status,
+      tags = tags
     )
     return Response({"message": "Post was created successfully"}, status= status.HTTP_201_CREATED)
 
