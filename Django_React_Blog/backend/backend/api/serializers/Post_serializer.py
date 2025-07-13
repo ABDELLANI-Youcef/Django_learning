@@ -32,6 +32,7 @@ class PostSerializerPost(serializers.ModelSerializer):
     depth = 0
 
 class PostSerializerGet(serializers.ModelSerializer):
+  comments = CommentSerializerGet(many = True)
   class Meta:
     model= api_models.Post
     fields = "__all__"

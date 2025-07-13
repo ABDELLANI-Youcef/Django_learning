@@ -5,10 +5,12 @@ import { Await, Link, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import apiInstance from '../../utils/axios';
 import Moment from '../../plugin/Moment';
+import Toast from "../../plugin/Toast";
 
 function Detail() {
   const [post, setPost] = useState([]);
   const [tags, setTags] = useState([]);
+  const [createComment, setCreateComment] = useState({full_name: "", email: "", comment: ""})
 
   const param = useParams();
 
@@ -23,6 +25,35 @@ function Detail() {
   useEffect(() => {
     fetchPost();
   }, []);
+
+  const handleCreateCommentChange = (event) =>{
+    setCreateComment(
+      {...createComment,
+      [event.target.name]: event.target.value}
+    )
+  }
+
+  const handleCreateCommentSubmit = async (event) => {
+    event.preventDefault()
+
+    const json = {
+      post_id: post?.id,
+      name: createComment.full_name,
+      email: createComment.email,
+      comment: createComment.comment
+    }
+    const response = await apiInstance.post('post/comment-post/', json)
+    console.log(response);
+    Toast("success", "Comment Posted")
+
+    setCreateComment(
+      {
+        full_name: "",
+        email: "",
+        comment: ""
+      }
+    )
+  }
 
   return (
     <>
@@ -290,71 +321,32 @@ function Detail() {
               </div>
 
               <div>
-                <h3>3 comments</h3>
-                <div className="my-4 d-flex bg-light p-3 mb-3 rounded">
-                  <img
-                    className="avatar avatar-md rounded-circle float-start me-3"
-                    src="https://img.freepik.com/free-photo/front-portrait-woman-with-beauty-face_186202-6146.jpg?size=626&ext=jpg&ga=GA1.1.735520172.1710979200&semt=ais"
-                    style={{
-                      width: '70px',
-                      height: '70px',
-                      objectFit: 'cover',
-                      borderRadius: '50%',
-                    }}
-                    alt="avatar"
-                  />
-                  <div>
-                    <div className="mb-2">
-                      <h5 className="m-0">Benny William</h5>
-                      <span className="me-3 small">June 11, 2023.</span>
+                <h3>{post?.comments?.length} comments</h3>
+                {post?.comments?.map((comment, index)=> (
+                  <div className="my-4 d-flex bg-light p-3 mb-3 rounded" key={index}>
+                    {/* <img
+                      className="avatar avatar-md rounded-circle float-start me-3"
+                      src="https://img.freepik.com/free-photo/front-portrait-woman-with-beauty-face_186202-6146.jpg?size=626&ext=jpg&ga=GA1.1.735520172.1710979200&semt=ais"
+                      style={{
+                        width: '70px',
+                        height: '70px',
+                        objectFit: 'cover',
+                        borderRadius: '50%',
+                      }}
+                      alt="avatar"
+                    /> */}
+                    <div>
+                      <div className="mb-2">
+                        <h5 className="m-0">{comment?.name}</h5>
+                        <span className="me-3 small">{Moment(comment.date)}</span>
+                      </div>
+                      <p className="fw-bold">
+                        {comment?.comment}
+                      </p>
                     </div>
-                    <p className="fw-bold">
-                      Thanks you very much for the post, it really helped.{' '}
-                    </p>
-                  </div>
-                </div>
+                  </div>))
+                  }
 
-                <div className="my-4 d-flex bg-light p-3 mb-3 rounded">
-                  <img
-                    className="avatar avatar-md rounded-circle float-start me-3"
-                    src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-                    style={{
-                      width: '70px',
-                      height: '70px',
-                      objectFit: 'cover',
-                      borderRadius: '50%',
-                    }}
-                    alt="avatar"
-                  />
-                  <div>
-                    <div className="mb-2">
-                      <h5 className="m-0">Jerry Doe</h5>
-                      <span className="me-3 small">June 12, 2024.</span>
-                    </div>
-                    <p className="fw-bold">Post more of these, please. </p>
-                  </div>
-                </div>
-
-                <div className="my-4 d-flex bg-light p-3 mb-3 rounded">
-                  <img
-                    className="avatar avatar-md rounded-circle float-start me-3"
-                    src="https://www.faceapp.com/static/img/content/compare/impression-example-after@2x.jpg"
-                    style={{
-                      width: '70px',
-                      height: '70px',
-                      objectFit: 'cover',
-                      borderRadius: '50%',
-                    }}
-                    alt="avatar"
-                  />
-                  <div>
-                    <div className="mb-2">
-                      <h5 className="m-0">Ken Altman</h5>
-                      <span className="me-3 small">June 14, 2024.</span>
-                    </div>
-                    <p className="fw-bold">Amazing blog post, keep it up. </p>
-                  </div>
-                </div>
               </div>
               {/* Comments END */}
               {/* Reply START */}
@@ -364,22 +356,37 @@ function Detail() {
                   Your email address will not be published. Required fields are
                   marked *
                 </small>
-                <form className="row g-3 mt-2">
+                <form className="row g-3 mt-2" onSubmit={handleCreateCommentSubmit}>
                   <div className="col-md-6">
                     <label className="form-label">Name *</label>
                     <input
                       type="text"
                       className="form-control"
                       aria-label="First name"
+                      onChange={handleCreateCommentChange}
+                      name='full_name'
+                      value={createComment.full_name}
                     />
                   </div>
                   <div className="col-md-6">
-                    <label className="form-label">Email *</label>
-                    <input type="email" className="form-control" />
+                    <label className="form-label" >Email *</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      onChange={handleCreateCommentChange}
+                      name='email'
+                      value={createComment.email}
+                    />
                   </div>
                   <div className="col-12">
-                    <label className="form-label">Write Comment *</label>
-                    <textarea className="form-control" rows={4} />
+                    <label className="form-label" >Write Comment *</label>
+                    <textarea
+                      className="form-control"
+                      rows={4}
+                      onChange={handleCreateCommentChange}
+                      name="comment"
+                      value={createComment.comment}
+                    />
                   </div>
                   <div className="col-12">
                     <button type="submit" className="btn btn-primary">
