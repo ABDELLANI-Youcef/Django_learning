@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../partials/Header';
 import Footer from '../partials/Footer';
-import { Await, Link, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import apiInstance from '../../utils/axios';
 import Moment from '../../plugin/Moment';
@@ -32,6 +32,8 @@ function Detail() {
       [event.target.name]: event.target.value}
     )
   }
+
+  fetchPost()
 
   const handleCreateCommentSubmit = async (event) => {
     event.preventDefault()
