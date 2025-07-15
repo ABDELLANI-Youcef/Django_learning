@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../partials/Header';
 import Footer from '../partials/Footer';
-import { Await, Link, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import apiInstance from '../../utils/axios';
 import Moment from '../../plugin/Moment';
@@ -53,6 +53,29 @@ function Detail() {
         comment: ""
       }
     )
+    fetchPost()
+  }
+
+  const handleLikePost = async () => {
+    const json = {
+      user_id: 4,
+      post_id: post?.id
+    }
+    const response = await apiInstance.post('post/post-like/', json)
+    console.log(response.data);
+    Toast("success", "Post liked")
+    fetchPost()
+  }
+  const handleBookmarkPost = async () => {
+    const json = {
+      user_id: 4,
+      post_id: post?.id
+    }
+
+    const response = await apiInstance.post('post/bookmark-post/', json)
+    console.log(response.data);
+    Toast("success", "Post bookmarked")
+    fetchPost()
   }
 
   return (
@@ -140,6 +163,12 @@ function Detail() {
                     </li>))
                   }
                 </ul>
+                <button className='btn btn-primary' onClick={handleLikePost}>
+                  <i className="fas fa-thumbs-up me-2"></i>{post?.likes?.length}
+                </button>
+                <button className='btn btn-danger ms-2' onClick={handleBookmarkPost}>
+                  <i className="fas fa-bookmark"></i>
+                </button>
               </div>
             </div>
             {/* Left sidebar END */}

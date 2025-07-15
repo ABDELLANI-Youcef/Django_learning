@@ -1,9 +1,50 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Header from '../partials/Header';
 import Footer from '../partials/Footer';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuthStore } from "../../store/auth";
+import { register } from "../../utils/auth";
 
 function Register() {
+  const [bioData, setBioData] = useState({full_name: "", email: "", password: "", password2: ""})
+  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
+
+  const handleBioDataChange = (event) => {
+    setBioData({
+      ...bioData,
+      [event.target.name]: event.target.value
+    })
+  }
+
+
+  const resetForm = () => {
+    setBioData(
+      {
+        full_name: "",
+        email: "",
+        password: "",
+        password2: ""
+      }
+    )
+  }
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const {error} = register(bioData.full_name, bioData.email, bioData.password, bioData.password2)
+    if (error) {
+      alert(JSON.stringify(error))
+      resetForm()
+    }
+    else{
+      navigate("/")
+    }
+
+    setIsLoading(false)
+  }
+
   return (
     <>
       <Header />
@@ -25,7 +66,7 @@ function Register() {
                   </span>
                 </div>
                 {/* Form */}
-                <form className="needs-validation" noValidate="">
+                <form onSubmit={handleRegister} className="needs-validation" noValidate="">
                   {/* Username */}
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">
@@ -38,6 +79,8 @@ function Register() {
                       name="full_name"
                       placeholder="John Doe"
                       required=""
+                      onChange={handleBioDataChange}
+                      value={bioData.full_name}
                     />
                   </div>
                   <div className="mb-3">
@@ -51,6 +94,8 @@ function Register() {
                       name="email"
                       placeholder="johndoe@gmail.com"
                       required=""
+                      onChange={handleBioDataChange}
+                      value={bioData.email}
                     />
                   </div>
 
@@ -66,6 +111,8 @@ function Register() {
                       name="password"
                       placeholder="**************"
                       required=""
+                      onChange={handleBioDataChange}
+                      value={bioData.password}
                     />
                   </div>
                   <div className="mb-3">
@@ -76,16 +123,24 @@ function Register() {
                       type="password"
                       id="password"
                       className="form-control"
-                      name="password"
+                      name="password2"
                       placeholder="**************"
                       required=""
+                      onChange={handleBioDataChange}
+                      value={bioData.password2}
                     />
                   </div>
                   <div>
                     <div className="d-grid">
-                      <button type="submit" className="btn btn-primary">
-                        Sign Up <i className="fas fa-user-plus"></i>
-                      </button>
+                      {isLoading === true ? (
+                          <button disabled type="submit" className="btn btn-primary">
+                          Sign Up <i className="fas fa-spinner fa-spin"></i>
+                        </button>
+                      ) : (
+                        <button type="submit" className="btn btn-primary">
+                          Sign Up <i className="fas fa-user-plus"></i>
+                        </button>
+                      )}
                     </div>
                   </div>
                 </form>
